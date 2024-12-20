@@ -1,15 +1,18 @@
 "use client";
 import { useEffect } from "react";
 import { useAuth } from "@/firebase/authContext";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 const withProtectedRoute = (Component: any) => {
   return (props: any) => {
     const { user, isLoading } = useAuth();
 
+    const pathName = usePathname();
+    console.log(pathName);
+
     useEffect(() => {
       if (!isLoading && !user) {
-        return redirect("/login");
+        return redirect(`/login?forward=${pathName}`);
       }
     }, [isLoading, user]);
 

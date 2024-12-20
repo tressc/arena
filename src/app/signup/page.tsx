@@ -1,25 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useAuth } from "@/firebase/authContext";
 import Link from "next/link";
 
-const Login = () => {
-  const { user, signIn, isLoading } = useAuth();
-
-  const searchParams = useSearchParams();
-  const forwardPath = searchParams.get("forward");
-
-  console.log(searchParams, forwardPath);
+const SignUp = () => {
+  const { user, signUp, isLoading } = useAuth();
 
   useEffect(() => {
     if (user) {
-      let path = "/";
-      if (forwardPath) {
-        path = forwardPath;
-      }
-      return redirect(path);
+      return redirect("/");
     }
   }, [user]);
 
@@ -29,7 +20,7 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    signIn(email, password);
+    signUp(email, password);
   };
 
   return !isLoading || !user ? (
@@ -52,14 +43,14 @@ const Login = () => {
           ></input>
         </label>
         <button type="submit" className="border border-black">
-          login
+          sign up
         </button>
       </form>
       <div>
-        not yet a member? <Link href="/signup">sign up</Link>
+        already a member? <Link href="/login">log in</Link>
       </div>
     </div>
   ) : null;
 };
 
-export default Login;
+export default SignUp;
