@@ -8,7 +8,9 @@ import {
   signOut as signOutFirebase,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import auth from "@firebase/auth";
+import { v4 as uuidv4 } from "uuid";
+import Identicon from "identicon.js";
+import auth from "@/firebase/authInstance";
 import db from "@firebase/db";
 
 const AuthContext = createContext<{
@@ -40,6 +42,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setDoc(doc(db, "users", user.uid), {
           uid: user.uid,
           email: user.email,
+          // ideally just use uid as first arg to Identicon
+          // better results using uuid
+          svg: new Identicon(uuidv4(), {
+            size: 420,
+            format: "svg",
+          }).toString(),
         })
           .then(() => {
             console.log("success");
