@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { redirect } from "next/navigation";
-import { useAuth } from "@/firebase/authContext";
 import Link from "next/link";
+import { useAuth } from "@/firebase/authContext";
 
 const SignUp = () => {
   const { user, signUp, isLoading } = useAuth();

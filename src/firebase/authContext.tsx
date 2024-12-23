@@ -7,7 +7,9 @@ import {
   signInWithEmailAndPassword,
   signOut as signOutFirebase,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import auth from "@firebase/auth";
+import db from "@firebase/db";
 
 const AuthContext = createContext<{
   user: User | null;
@@ -33,13 +35,23 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up
+        // Add user record to firestore
         const user = userCredential.user;
-        console.log("success", { user });
+        setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+        })
+          .then(() => {
+            console.log("success");
+          })
+          .catch((e) => {
+            console.error("Error adding document: ", e);
+          });
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log({ errorMessage, errorCode });
+        console.error({ errorMessage, errorCode });
       });
   };
 
@@ -52,7 +64,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log({ errorMessage, errorCode });
+        console.error({ errorMessage, errorCode });
       });
   };
 
@@ -63,7 +75,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         console.log({ user, isLoading });
       })
       .catch((error) => {
-        console.log({ error });
+        console.error({ error });
       });
   };
 
