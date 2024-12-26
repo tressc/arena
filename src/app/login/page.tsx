@@ -8,10 +8,13 @@ import Link from "next/link";
 const Login = () => {
   const { user, signIn, isLoading } = useAuth();
 
-  const searchParams = useSearchParams();
-  const forwardPath = searchParams.get("forward");
+  const msg = fetch("http://localhost:3000/api/hello")
+    .then((res) => res.json())
+    .then((json) => console.log(json));
 
-  console.log(searchParams, forwardPath);
+  // currently getting called on every keystroke :(
+  const searchParams = useSearchParams();
+  const forwardPath = searchParams?.get("forward");
 
   useEffect(() => {
     if (user) {
