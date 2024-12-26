@@ -6,31 +6,16 @@ import withProtectedRoute from "@/components/withProtectedRoute";
 import SignOutButton from "@/components/signOutButton";
 import { useAuth } from "@/firebase/authContext";
 import db from "@firebase/db";
-
-type AccessToken = null | string;
+import customFetch from "@/utils/customFetch";
 
 const Profile = () => {
   const [svg, setSvg] = useState<string | null>(null);
 
   const { user } = useAuth();
 
-  let [accessToken, setAccessToken] = useState<AccessToken>(null);
-
-  user?.getIdToken().then((token) => setAccessToken(token));
-
-  const myHeaders = new Headers();
-  if (accessToken) {
-    myHeaders.append("token", accessToken);
-  }
-  useEffect(() => {
-    if (accessToken) {
-      fetch("http://localhost:3000/api/hello", {
-        headers: myHeaders,
-      })
-        .then((res) => res.json())
-        .then((json) => console.log(json));
-    }
-  }, [accessToken]);
+  customFetch("http://localhost:3000/api/hello")
+    .then((res) => res?.json())
+    .then((json) => console.log(json));
 
   useEffect(() => {
     if (!user) return;
