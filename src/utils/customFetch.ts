@@ -1,6 +1,7 @@
 import { useAuth } from "@/firebase/authContext";
 
 const customFetch = async (url: string) => {
+  // attach user's firebase id token to all api requests
   const { user } = useAuth();
   if (user) {
     const token = await user.getIdToken();
