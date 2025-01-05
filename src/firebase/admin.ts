@@ -9,9 +9,9 @@ const firebaseAdminConfig = {
   }),
 };
 
-let adminApp =
+const adminApp =
   getApps().length === 0 ? initializeApp(firebaseAdminConfig) : getApps()[0];
 
-let adminAuth = auth();
+const adminAuth = auth();
 
 export { adminApp, adminAuth };

@@ -7,7 +7,7 @@ import SignOutButton from "@/components/signOutButton";
 import { useAuth } from "@/firebase/authContext";
 import db from "@firebase/db";
 // import customFetch from "@/utils/customFetch";
-import { socket } from "@/socket";
+import { useSocket } from "@/socketio/socketContext";
 
 const Profile = () => {
   const [svg, setSvg] = useState<string | null>(null);
@@ -16,16 +16,22 @@ const Profile = () => {
 
   const { user } = useAuth();
 
+  const socket = useSocket();
+
   // customFetch("http://localhost:3000/api/hello")
   //   .then((res) => res?.json())
   //   .then((json) => console.log(json));
 
   useEffect(() => {
+    if (!socket) return;
+    console.log("socket:", socket);
     if (socket.connected) {
       onConnect();
     }
 
     function onConnect() {
+      if (!socket) return;
+
       setIsConnected(true);
       setTransport(socket.io.engine.transport.name);
 
@@ -46,10 +52,9 @@ const Profile = () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
-    console.log("useeffect");
     if (!user) return;
     const docRef = doc(db, "users", user.uid);
 
@@ -64,6 +69,7 @@ const Profile = () => {
     fetchSvg().catch(console.error);
   }, []);
 
+  socket?.connect();
   return (
     <>
       <p>Status: {isConnected ? "connected" : "disconnected"}</p>

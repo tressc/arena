@@ -22,7 +22,8 @@
       "@/*": ["./src/*"],
       "@utils/*": ["./src/utils/*"],
       "@components/*": ["./src/components/*"],
-      "@firebase/*": ["./src/firebase/*"]
+      "@firebase/*": ["./src/firebase/*"],
+      "@socketio/*": ["./src/socketio/*"]
     }
   },
   "include": [
@@ -30,7 +31,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "server.js"
+    "server.js",
+    "src/firebase/admin.js"
   ],
   "exclude": ["node_modules"]
 }
