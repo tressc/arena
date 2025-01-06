@@ -20,7 +20,12 @@ const SocketHandler = async (
   req: NextApiRequest,
   res: NextApiResponseWithSocket
 ) => {
-  const { token } = req.query;
+  const { token } = req.headers;
+
+  if (!token) {
+    return res.status(401).json({ error: "Please include id token in header" });
+  }
+
   if (token && typeof token == "string") {
     try {
       const { uid } = await adminAuth.verifyIdToken(token);
@@ -29,6 +34,7 @@ const SocketHandler = async (
       console.error(error);
     }
   }
+
   if (res.socket.server.io) {
     console.log("Socket is already running.");
   } else {

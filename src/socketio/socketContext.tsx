@@ -3,6 +3,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "@/firebase/authContext";
+import customFetch from "@/utils/customFetch";
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -13,19 +14,15 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    const establishConnection = async () => {
-      if (user) {
-        const token = await user.getIdToken();
-        fetch(`/api/socketio?token=${token}`);
-        setSocket(io());
-        return () => {
-          if (socket) socket.off();
-        };
-      }
-    };
+  customFetch("/api/socketio");
 
-    establishConnection();
+  useEffect(() => {
+    if (user) {
+      setSocket(io());
+    }
+    return () => {
+      if (socket) socket.off();
+    };
   }, [user]);
 
   return (
