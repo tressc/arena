@@ -9,6 +9,7 @@ const customFetch = async (url: string) => {
     myHeaders.append("token", token);
     return fetch(url, { headers: myHeaders });
   } else {
+    // TODO: retry logic and a warning on failure
     console.log("no user!");
   }
 };

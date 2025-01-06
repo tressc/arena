@@ -26,9 +26,13 @@ const SocketHandler = async (
     return res.status(401).json({ error: "Please include id token in header" });
   }
 
+  let uid: string | null = null;
+
   if (token && typeof token == "string") {
     try {
-      const { uid } = await adminAuth.verifyIdToken(token);
+      // verify token and get the user id via firebase api
+      const verifiedId = await adminAuth.verifyIdToken(token);
+      uid = verifiedId.uid;
       console.log("UID:", uid);
     } catch (error) {
       console.error(error);
@@ -44,11 +48,14 @@ const SocketHandler = async (
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
+      socket.data.uid = uid;
       console.log(`${socket.id} connecting.`);
 
+      // TODO: register handlers
+
       // EVENT EXAMPLE
-      socket.on("some-event-name", () => {
-        io.to(socket.id).emit("send-something-back", { some: "data" });
+      socket.on("get-uid", () => {
+        io.to(socket.id).emit("send-uid", { uid: socket.data.uid });
       });
 
       // DISCONNECT LISTENER

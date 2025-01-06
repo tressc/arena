@@ -6,7 +6,6 @@ import withProtectedRoute from "@/components/withProtectedRoute";
 import SignOutButton from "@/components/signOutButton";
 import { useAuth } from "@/firebase/authContext";
 import db from "@firebase/db";
-// import customFetch from "@/utils/customFetch";
 import { useSocket } from "@/socketio/socketContext";
 
 const Profile = () => {
@@ -17,10 +16,6 @@ const Profile = () => {
   const { user } = useAuth();
 
   const socket = useSocket();
-
-  // customFetch("http://localhost:3000/api/hello")
-  //   .then((res) => res?.json())
-  //   .then((json) => console.log(json));
 
   useEffect(() => {
     if (!socket) return;
@@ -45,8 +40,14 @@ const Profile = () => {
       setTransport("N/A");
     }
 
+    function receiveUid(data: any) {
+      console.log(data);
+    }
+
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+
+    socket.on("send-uid", receiveUid);
 
     return () => {
       socket.off("connect", onConnect);
@@ -69,7 +70,13 @@ const Profile = () => {
     fetchSvg().catch(console.error);
   }, []);
 
-  socket?.connect();
+  const getUid = () => {
+    if (socket) {
+      console.log("getting uid...");
+      socket.emit("get-uid");
+    }
+  };
+
   return (
     <>
       <p>Status: {isConnected ? "connected" : "disconnected"}</p>
@@ -79,6 +86,7 @@ const Profile = () => {
       )}
       <div>i am a protected route</div>
       <SignOutButton />
+      <button onClick={getUid}>get uid</button>
     </>
   );
 };
