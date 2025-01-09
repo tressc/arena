@@ -32,8 +32,8 @@ const SocketHandler = async (
     try {
       // verify token and get the user id via firebase api
       const verifiedId = await adminAuth.verifyIdToken(token);
-      uid = verifiedId.uid;
-      console.log("UID:", uid);
+      // uid = verifiedId.uid;
+      console.log("UID:", verifiedId.uid);
     } catch (error) {
       console.error(error);
     }
@@ -47,8 +47,28 @@ const SocketHandler = async (
     const io = new IOServer(res.socket.server);
     res.socket.server.io = io;
 
+    io.use(async (socket, next) => {
+      const token = socket.handshake.auth.token;
+      console.log(token, typeof token);
+      if (token && typeof token == "string") {
+        console.log("hello");
+
+        try {
+          const verifiedId = await adminAuth.verifyIdToken(token);
+          console.log("VERIFIED:", verifiedId);
+          socket.data.uid = verifiedId.uid;
+          next();
+        } catch (error) {
+          console.error(error);
+          next();
+        }
+      } else {
+        console.error("no token");
+        next();
+      }
+    });
+
     io.on("connection", (socket) => {
-      socket.data.uid = uid;
       console.log(`${socket.id} connecting.`);
 
       // TODO: register handlers
@@ -56,6 +76,14 @@ const SocketHandler = async (
       // EVENT EXAMPLE
       socket.on("get-uid", () => {
         io.to(socket.id).emit("send-uid", { uid: socket.data.uid });
+      });
+
+      socket.on("emit-ping", () => {
+        console.log("emitting:", socket.data.uid);
+        socket.broadcast.emit("on-ping", {
+          uid: socket.data.uid,
+          time: Date.now(),
+        });
       });
 
       // DISCONNECT LISTENER

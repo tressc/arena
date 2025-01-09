@@ -4,6 +4,7 @@ const customFetch = async (url: string) => {
   // attach user's firebase id token to all api requests
   const { user } = useAuth();
   if (user) {
+    // TODO: memoize this value
     const token = await user.getIdToken();
     const myHeaders = new Headers();
     myHeaders.append("token", token);
