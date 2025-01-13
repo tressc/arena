@@ -23,7 +23,8 @@
       "@utils/*": ["./src/utils/*"],
       "@components/*": ["./src/components/*"],
       "@firebase/*": ["./src/firebase/*"],
-      "@socketio/*": ["./src/socketio/*"]
+      "@socketio/*": ["./src/socketio/*"],
+      "@state/*": ["./src/socketio/state/*"]
     }
   },
   "include": [

@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { Socket as NetSocket } from "net";
 import { Server as IOServer } from "socket.io";
 import { adminAuth } from "@firebase/admin";
+import registerLobbyHandlers from "@/socketio/handlers/lobby";
 
 interface SocketServer extends HTTPServer {
   io?: IOServer | undefined;
@@ -72,13 +73,15 @@ const SocketHandler = async (
       console.log(`${socket.id} connecting.`);
 
       // TODO: register handlers
-
+      console.log("registering event handlers");
+      registerLobbyHandlers(io, socket);
       // EVENT EXAMPLE
       socket.on("get-uid", () => {
         io.to(socket.id).emit("send-uid", { uid: socket.data.uid });
       });
 
       socket.on("emit-ping", () => {
+        // console.log("# connections:", io.engine.clientsCount);
         console.log("emitting:", socket.data.uid);
         socket.broadcast.emit("on-ping", {
           uid: socket.data.uid,
