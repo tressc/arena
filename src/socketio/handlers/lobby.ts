@@ -1,5 +1,10 @@
 import { Server as IOServer, Socket } from "socket.io";
-import { matches, createMatch, userJoin } from "@state/matches";
+import {
+  matches,
+  createMatch,
+  deleteMatch as deleteMatchFromState,
+  userJoin,
+} from "@state/matches";
 import { randomUUID } from "crypto";
 
 const registerLobbyHandlers = (io: IOServer, socket: Socket) => {
@@ -15,7 +20,9 @@ const registerLobbyHandlers = (io: IOServer, socket: Socket) => {
     // check if maxUserCount already reached
   };
 
-  const deleteMatch = () => {
+  const deleteMatch = (matchId: string) => {
+    deleteMatchFromState(matchId);
+    io.to("lobby").emit("lobby:match:delete", matchId);
     // delete match
     // emit change to room
   };
@@ -64,6 +71,8 @@ const registerLobbyHandlers = (io: IOServer, socket: Socket) => {
   socket.on("lobby:match:leave", onLeaveMatch);
   socket.on("lobby:enter", onEnter);
   socket.on("lobby:exit", onExit);
+  //test
+  socket.on("lobby:match:delete", deleteMatch);
 };
 
 export default registerLobbyHandlers;
