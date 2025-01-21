@@ -9,6 +9,7 @@ Arena is a web application where users can play digital board games with each ot
 - [ ] Seamless gameplay
 - [ ] View past game records
 - [ ] Track your progress in monthly rankings
+- [ ] Dark mode
 
 ## Technology
 
@@ -26,9 +27,9 @@ Arena leverages the following technology:
 
 This project uses Firebase for authentication and persistant storage. If you would like to run this project locally, you will first need to initialize a Firebase project following [this guide](https://firebase.google.com/docs/web/setup).
 
-Once initialized, from the Firebase project dashboard, enable `Email/Password` and `Google` Sign-in providers under `Authentication > Sign-in methods`. Further, add a database and create a collection called `users` under `Firestore Database > Data`.
+Once initialized, from the Firebase project dashboard enable `Email/Password` and `Google` sign-in providers under `Authentication > Sign-in methods`. Further, add a database and create a collection called `users` under `Firestore Database > Data`.
 
-Create a `.env` file the root project directory and add the following environment variables. Replace the `***`'s with values copied from your personal Firebase project dashboard under `Project Overview > General` and `Project Overview > Service Accounts`.
+Create a `.env` file the root project directory and add the following environment variables. Replace the `***`'s with values copied from your personal Firebase project dashboard under `Project Overview > General` and `Project Overview > Service Accounts`. For the latter, you will need to generate a new private key which will also provide a JSON file with the configuration values.
 
 ```
 # client app config
