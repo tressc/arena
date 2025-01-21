@@ -5,6 +5,7 @@ interface Match {
   ante: number;
   minUserCount: number;
   maxUserCount: number;
+  status: string;
 }
 
 const matches: { [key: string]: Match } = {};
@@ -15,9 +16,18 @@ const createMatch = (
   game: string,
   ante: number,
   minUserCount: number,
-  maxUserCount: number
+  maxUserCount: number,
+  status: string
 ) => {
-  matches[uuid] = { uuid, users, game, ante, minUserCount, maxUserCount };
+  matches[uuid] = {
+    uuid,
+    users,
+    game,
+    ante,
+    minUserCount,
+    maxUserCount,
+    status,
+  };
 };
 
 const deleteMatch = (matchId: string) => {

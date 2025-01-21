@@ -2,8 +2,14 @@ import type { Server as HTTPServer } from "http";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Socket as NetSocket } from "net";
 import { Server as IOServer } from "socket.io";
-import { adminAuth } from "@firebase/admin";
+// import { adminAuth } from "@firebase/admin";
+// import { doc, DocumentSnapshot, getDoc } from "firebase-admin/firestore";
+// import { doc, DocumentSnapshot, getDoc } from "@firebase-admin/firestore";
+// import db from "@firebase/db";
+// import { doc, DocumentSnapshot, getDoc } from "firebase/firestore";
+import { adminAuth, adminDb } from "@/firebase/admin";
 import registerLobbyHandlers from "@/socketio/handlers/lobby";
+import { users, addUser } from "@/socketio/state/users";
 
 interface SocketServer extends HTTPServer {
   io?: IOServer | undefined;
@@ -33,8 +39,22 @@ const SocketHandler = async (
     try {
       // verify token and get the user id via firebase api
       const verifiedId = await adminAuth.verifyIdToken(token);
-      // uid = verifiedId.uid;
-      console.log("UID:", verifiedId.uid);
+      // save user info to state
+      const fetchUserData = async () => {
+        const userRef = adminDb.collection("users").doc(verifiedId.uid);
+        const userDoc = await userRef.get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          // TODO: update firestore values on change
+          addUser({
+            uuid: userData?.uid,
+            points: userData?.points || 0,
+            currentMatch: userData?.currentMatch || null,
+          });
+        }
+      };
+
+      fetchUserData().catch(console.error);
     } catch (error) {
       console.error(error);
     }
@@ -71,8 +91,7 @@ const SocketHandler = async (
 
     io.on("connection", (socket) => {
       console.log(`${socket.id} connecting.`);
-
-      // TODO: register handlers
+      console.log({ users });
       console.log("registering event handlers");
       registerLobbyHandlers(io, socket);
       // EVENT EXAMPLE

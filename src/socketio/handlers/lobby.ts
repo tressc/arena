@@ -5,6 +5,7 @@ import {
   deleteMatch as deleteMatchFromState,
   userJoin,
 } from "@state/matches";
+import { users } from "@state/users";
 import { randomUUID } from "crypto";
 
 const registerLobbyHandlers = (io: IOServer, socket: Socket) => {
@@ -13,11 +14,19 @@ const registerLobbyHandlers = (io: IOServer, socket: Socket) => {
     return matches;
   };
 
-  const canJoinMatch = () => {
+  const canJoinMatch = (userId: string, matchId: string) => {
     // check if current user has enough points to satisfy ante
     // check if user is currently in any matches
     // check if game is already started or ended
     // check if maxUserCount already reached
+    const user = users[userId];
+    const match = matches[matchId];
+    return (
+      match.users.size < match.maxUserCount &&
+      match.status !== "pending" &&
+      user.points >= match.ante &&
+      user.currentMatch === null
+    );
   };
 
   const deleteMatch = (matchId: string) => {
@@ -34,7 +43,7 @@ const registerLobbyHandlers = (io: IOServer, socket: Socket) => {
     // save match in matches object under uuid
     // emit change to room
     const matchId = randomUUID();
-    createMatch(matchId, new Set<string>(), "tictactoe", 0, 2, 2);
+    createMatch(matchId, new Set<string>(), "tictactoe", 0, 2, 2, "pending");
     userJoin(matchId, socket.data.uid);
     const matchData = matches[matchId];
     console.log(matches);

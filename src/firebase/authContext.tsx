@@ -42,6 +42,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setDoc(doc(db, "users", user.uid), {
           uid: user.uid,
           email: user.email,
+          points: 100,
+          currentMatch: null,
           // ideally just use uid as first arg to Identicon
           // better results using uuid
           svg: new Identicon(uuidv4(), {
