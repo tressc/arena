@@ -1,7 +1,6 @@
 // TODO: properly type user
 const Fetch = async (url: string, user: any) => {
   if (user) {
-    // TODO: memoize this value
     const token = await user.getIdToken();
     const myHeaders = new Headers();
     myHeaders.append("token", token);

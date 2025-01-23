@@ -95,7 +95,6 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(false);
       if (user) {
         setUser(user);
-        Fetch("/api/user", user);
       }
     });
 

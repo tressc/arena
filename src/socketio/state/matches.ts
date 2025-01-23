@@ -36,11 +36,24 @@ const deleteMatch = (matchId: string) => {
 
 const userJoin = (matchId: string, userId: string) => {
   matches[matchId].users.add(userId);
-  console.log(matches[matchId].users);
 };
 
 const userLeave = (matchId: string, userId: string) => {
   matches[matchId].users.delete(userId);
 };
 
-export { type Match, matches, createMatch, deleteMatch, userJoin, userLeave };
+const matchStatuses = {
+  pending: "PENDING",
+  inProgress: "IN_PROGRESS",
+  concluded: "CONCLUDED",
+};
+
+export {
+  type Match,
+  matches,
+  createMatch,
+  deleteMatch,
+  userJoin,
+  userLeave,
+  matchStatuses,
+};

@@ -17,16 +17,16 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const { user } = useContext(AuthContext);
 
-  // hit endpoint to initialize socketio connection
-  // firebase session token is added to header via Fetch
-  Fetch("/api/socketio", user);
-
   useEffect(() => {
     // initialize the clientside connection and set the state variable
 
     const initializeConnection = async () => {
+      // hit endpoint to initialize socketio connection
+      // firebase session token is added to header via Fetch
+      Fetch("/api/socketio", user);
       const idToken = await user?.getIdToken();
       setSocket(io({ auth: { token: idToken } }));
+      // setSocket(io());
     };
 
     if (!socket && user) {

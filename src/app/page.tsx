@@ -21,7 +21,7 @@ const Home = () => {
 
   const createMatch = () => {
     if (socket) {
-      socket.emit("lobby:match:create");
+      socket.emit("lobby:match:create", 50);
     }
   };
 

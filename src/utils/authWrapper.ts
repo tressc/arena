@@ -1,6 +1,5 @@
-import { addUser } from "@/socketio/state/users";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { adminAuth, adminDb } from "@/firebase/admin";
+import { adminAuth } from "@/firebase/admin";
 
 // TODO: properly type handler
 export default function withAuth(handler: any) {
@@ -15,26 +14,13 @@ export default function withAuth(handler: any) {
 
     if (token && typeof token == "string") {
       try {
-        // verify token and get the user id via firebase api
-        const verifiedId = await adminAuth.verifyIdToken(token);
-        // save user info to state
-        const userRef = adminDb.collection("users").doc(verifiedId.uid);
-        const userDoc = await userRef.get();
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          uid = userData?.uid;
-          addUser({
-            uuid: userData?.uid,
-            points: userData?.points || 0,
-            currentMatch: userData?.currentMatch || null,
-          });
-        }
+        // verify token
+        await adminAuth.verifyIdToken(token);
       } catch (error) {
-        console.error(error);
+        return res.status(401).json({ error: "Unauthorized" });
       }
     }
-
     // if auth'd pass uid to request
-    return handler(req, res, uid);
+    return handler(req, res);
   };
 }
