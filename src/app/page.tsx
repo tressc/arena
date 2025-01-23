@@ -15,7 +15,6 @@ const Home = () => {
   const socket = useSocket();
 
   const getInitialState = (lobbyState: Matches) => {
-    console.log({ lobbyState });
     setMatches(lobbyState);
   };
 
