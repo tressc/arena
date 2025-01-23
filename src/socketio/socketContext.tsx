@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { io, Socket } from "socket.io-client";
-import { useAuth } from "@/firebase/authContext";
-import customFetch from "@/utils/customFetch";
+import { AuthContext } from "@/firebase/authContext";
+import Fetch from "@/utils/customFetch";
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -15,11 +15,11 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   // TODO: move fetch & token stuff into useEffect?
   // TODO: any reason to prefer state over let?
 
-  // hit endpoint to initialize socketio connection
-  // firebase session token is added to header via customFetch
-  customFetch("/api/socketio");
+  const { user } = useContext(AuthContext);
 
-  const { user } = useAuth();
+  // hit endpoint to initialize socketio connection
+  // firebase session token is added to header via Fetch
+  Fetch("/api/socketio", user);
 
   useEffect(() => {
     // initialize the clientside connection and set the state variable

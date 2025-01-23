@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { doc, DocumentSnapshot, getDoc } from "firebase/firestore";
 import withProtectedRoute from "@/components/withProtectedRoute";
 import SignOutButton from "@/components/signOutButton";
-import { useAuth } from "@/firebase/authContext";
+import { AuthContext } from "@/firebase/authContext";
 import db from "@firebase/db";
 import { useSocket } from "@/socketio/socketContext";
 
@@ -13,7 +13,7 @@ const Profile = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
 
-  const { user } = useAuth();
+  const { user } = useContext(AuthContext);
 
   const socket = useSocket();
 

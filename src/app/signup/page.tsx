@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/firebase/authContext";
+import { AuthContext } from "@/firebase/authContext";
 
 const SignUp = () => {
-  const { user, signUp, isLoading } = useAuth();
+  const { user, signUp, isLoading } = useContext(AuthContext);
 
   useEffect(() => {
     if (user) {

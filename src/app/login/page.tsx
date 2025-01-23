@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { redirect, useSearchParams } from "next/navigation";
-import { useAuth } from "@/firebase/authContext";
+import { AuthContext } from "@/firebase/authContext";
 import Link from "next/link";
 
 const Login = () => {
-  const { user, signIn, isLoading } = useAuth();
+  const { user, signIn, isLoading } = useContext(AuthContext);
 
   const msg = fetch("http://localhost:3000/api/hello")
     .then((res) => res.json())

@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import Identicon from "identicon.js";
 import auth from "@/firebase/authInstance";
 import db from "@firebase/db";
+import Fetch from "@/utils/customFetch";
 
 const AuthContext = createContext<{
   user: User | null;
@@ -94,6 +95,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(false);
       if (user) {
         setUser(user);
+        Fetch("/api/user", user);
       }
     });
 
@@ -107,8 +109,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-const useAuth = () => {
-  return useContext(AuthContext);
-};
+// const useAuth = () => {
+//   const { user, signIn, signOut, signUp, isLoading } = useContext(AuthContext);
+//   return () => ({
+//     user,
+//     signIn,
+//     signOut,
+//     signUp,
+//     isLoading,
+//   });
+// };
 
-export { AuthContext, AuthProvider, useAuth };
+export { AuthContext, AuthProvider };

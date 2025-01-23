@@ -1,9 +1,10 @@
 "use client";
 
-import { useAuth } from "@/firebase/authContext";
+import { AuthContext } from "@/firebase/authContext";
+import { useContext } from "react";
 
 const SignOutButton = () => {
-  const { signOut } = useAuth();
+  const { signOut } = useContext(AuthContext);
   const handleClick = (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     signOut();
   };
